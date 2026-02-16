@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="dark" lang="pt-br">
+<html lang="pt-br">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>Família em Ordem - Smart Dashboard</title>
+    <title>Família em Ordem - Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     <script>
         tailwind.config = {
             theme: {
@@ -23,14 +23,11 @@
         }
     </script>
     <style>
-        body { background-color: #050505; touch-action: manipulation; -webkit-font-smoothing: antialiased; }
+        body { background-color: #050505; touch-action: manipulation; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .bottom-sheet { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sheet-hidden { transform: translateY(105%); }
+        .sheet-hidden { transform: translateY(110%); }
         .hide-scroll::-webkit-scrollbar { display: none; }
-        .ai-gradient { background: linear-gradient(135deg, #A78BFA 0%, #2DD4BF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        .animate-ai { animation: pulse-soft 3s infinite; }
     </style>
 </head>
 <body class="text-zinc-100 font-sans overflow-hidden select-none">
@@ -39,13 +36,11 @@
         <!-- HEADER -->
         <header class="sticky top-0 z-30 bg-bg-black/80 backdrop-blur-md px-6 pt-12 pb-6 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="size-11 rounded-2xl bg-gradient-to-tr from-zinc-800 to-zinc-700 p-[1px]">
-                    <div class="w-full h-full bg-bg-black rounded-2xl flex items-center justify-center">
-                        <span class="material-symbols-rounded text-primary-green">family_restroom</span>
-                    </div>
+                <div class="size-11 rounded-2xl bg-zinc-800 flex items-center justify-center border border-white/10">
+                    <span class="material-symbols-rounded text-primary-green">family_restroom</span>
                 </div>
                 <div>
-                    <h1 class="text-xs text-zinc-500 font-bold uppercase tracking-widest">Dashboard Familiar</h1>
+                    <h1 class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Dashboard Familiar</h1>
                     <p class="text-base font-bold">Carol & Deivid</p>
                 </div>
             </div>
@@ -56,23 +51,18 @@
 
         <main class="px-6 space-y-8">
             <!-- MAIN CARD -->
-            <section class="relative overflow-hidden p-8 rounded-[2.5rem] bg-gradient-to-br from-zinc-900 to-black border border-white/5 shadow-2xl">
-                <div class="absolute -top-20 -right-20 size-64 bg-primary-green/10 blur-[100px] rounded-full"></div>
-                
-                <div class="flex justify-between items-start mb-10">
+            <section class="p-8 rounded-[2.5rem] bg-gradient-to-br from-zinc-900 to-black border border-white/5 shadow-2xl mt-2">
+                <div class="flex justify-between items-start mb-8">
                     <div>
-                        <p id="current-month" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Carregando...</p>
+                        <p id="current-month" class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Janeiro 2026</p>
                         <h2 class="text-4xl font-medium tracking-tight">R$ <span id="saldo-total">0,00</span></h2>
-                    </div>
-                    <div class="bg-primary-green/10 px-3 py-1.5 rounded-full">
-                        <span class="text-primary-green text-[10px] font-bold">+12% vs mês ant.</span>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-8 py-6 border-y border-white/5">
+                <div class="grid grid-cols-2 gap-4 py-6 border-y border-white/5">
                     <div>
-                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Renda Total</p>
-                        <p class="text-lg font-semibold text-zinc-300">R$ 10.000</p>
+                        <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Entradas</p>
+                        <p class="text-lg font-semibold text-zinc-300">R$ 10.000,00</p>
                     </div>
                     <div>
                         <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Gastos</p>
@@ -80,64 +70,61 @@
                     </div>
                 </div>
 
-                <div class="mt-8 space-y-4">
-                    <div class="flex justify-between items-end">
-                        <p class="text-xs font-medium text-zinc-400">Saúde Financeira</p>
-                        <p id="meta-percent" class="text-sm font-bold text-primary-green">0%</p>
+                <div class="mt-6 space-y-3">
+                    <div class="flex justify-between text-xs font-medium text-zinc-400">
+                        <span>Saúde Financeira</span>
+                        <span id="meta-percent" class="text-primary-green font-bold">0%</span>
                     </div>
                     <div class="h-2 w-full bg-zinc-800 rounded-full overflow-hidden">
-                        <div id="meta-bar" class="h-full bg-primary-green transition-all duration-1000 ease-out" style="width: 0%"></div>
+                        <div id="meta-bar" class="h-full bg-primary-green transition-all duration-1000" style="width: 0%"></div>
                     </div>
                 </div>
             </section>
 
-            <!-- NOVO: AI INSIGHTS -->
-            <section class="space-y-4">
+            <!-- AI INSIGHTS -->
+            <section class="space-y-3">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-rounded text-ai-purple animate-ai">psychology</span>
-                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Insights de IA</h3>
+                    <span class="material-symbols-rounded text-ai-purple">psychology</span>
+                    <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Análise de IA</h3>
                 </div>
-                <div id="ai-insight-box" class="glass p-5 rounded-3xl border-l-4 border-l-ai-purple flex flex-col gap-2">
-                    <p id="ai-text" class="text-sm leading-relaxed italic text-zinc-300">Analisando seus padrões de gastos...</p>
-                    <div id="ai-loading" class="h-1 w-24 bg-zinc-800 rounded-full overflow-hidden">
-                        <div class="h-full bg-ai-purple animate-pulse w-full"></div>
-                    </div>
+                <div class="glass p-5 rounded-3xl border-l-4 border-l-ai-purple">
+                    <p id="ai-text" class="text-sm italic text-zinc-300">Aguardando dados para análise...</p>
                 </div>
             </section>
 
-            <!-- QUICK ACTIONS -->
+            <!-- CATEGORIES -->
             <section class="grid grid-cols-4 gap-4">
-                <div onclick="openAddGasto('Contas')" class="flex flex-col items-center gap-3 active:scale-95 transition-all">
-                    <div class="size-16 glass rounded-3xl flex items-center justify-center shadow-lg">
+                <button onclick="openAddGasto('Contas')" class="flex flex-col items-center gap-2 active:scale-95 transition-all">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center">
                         <span class="material-symbols-rounded text-zinc-300">receipt_long</span>
                     </div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Contas</span>
-                </div>
-                <div onclick="openAddGasto('Maria Luiza')" class="flex flex-col items-center gap-3 active:scale-95 transition-all">
-                    <div class="size-16 glass rounded-3xl flex items-center justify-center shadow-lg">
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase">Contas</span>
+                </button>
+                <button onclick="openAddGasto('Maria Luiza')" class="flex flex-col items-center gap-2 active:scale-95 transition-all">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center border-blue-500/20">
                         <span class="material-symbols-rounded text-blue-400">child_care</span>
                     </div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Malu</span>
-                </div>
-                <div onclick="openAddGasto('Mercado')" class="flex flex-col items-center gap-3 active:scale-95 transition-all">
-                    <div class="size-16 glass rounded-3xl flex items-center justify-center shadow-lg">
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-tighter">Malu</span>
+                </button>
+                <button onclick="openAddGasto('Mercado')" class="flex flex-col items-center gap-2 active:scale-95 transition-all">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center">
                         <span class="material-symbols-rounded text-orange-400">shopping_cart</span>
                     </div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Mercado</span>
-                </div>
-                <div class="flex flex-col items-center gap-3 active:scale-95 transition-all opacity-40">
-                    <div class="size-16 glass rounded-3xl flex items-center justify-center shadow-lg">
-                        <span class="material-symbols-rounded">more_horiz</span>
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase tracking-tighter">Mercado</span>
+                </button>
+                <button onclick="openAddGasto('Geral')" class="flex flex-col items-center gap-2 active:scale-95 transition-all">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center">
+                        <span class="material-symbols-rounded text-zinc-400">more_horiz</span>
                     </div>
-                    <span class="text-[10px] font-bold text-zinc-500 uppercase">Outros</span>
-                </div>
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase">Geral</span>
+                </button>
             </section>
 
-            <!-- RECENT TRANSACTIONS -->
+            <!-- LIST -->
             <section class="space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-zinc-500 uppercase tracking-widest">Atividade Recente</h3>
-                    <button onclick="resetData()" class="text-[10px] font-bold text-rose-500/50 uppercase">Limpar</button>
+                    <h3 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Atividade Recente</h3>
+                    <button onclick="resetData()" class="text-[9px] font-bold text-rose-500/50 uppercase">Limpar tudo</button>
                 </div>
                 <div id="transactions-list" class="space-y-3">
                     <!-- Dinâmico -->
@@ -146,46 +133,53 @@
         </main>
     </div>
 
-    <!-- ADD GASTO SHEET -->
+    <!-- BOTTOM SHEET (LANÇAR) -->
     <div id="add-gasto-sheet" class="fixed inset-0 z-50 bottom-sheet sheet-hidden bg-bg-black flex flex-col">
-        <div class="w-12 h-1.5 bg-zinc-800 rounded-full mx-auto mt-6"></div>
+        <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mt-6"></div>
         <header class="p-8 flex items-center justify-between">
-            <button onclick="closeAddGasto()" class="size-12 rounded-2xl glass flex items-center justify-center active:scale-90 transition-transform">
+            <button onclick="closeAddGasto()" class="size-12 rounded-2xl glass flex items-center justify-center">
                 <span class="material-symbols-rounded">close</span>
             </button>
-            <h2 id="sheet-title" class="text-sm font-bold uppercase tracking-[0.2em] text-zinc-500 text-center flex-1">Novo Gasto</h2>
-            <div class="w-12"></div>
+            <h2 id="sheet-title" class="text-sm font-bold uppercase tracking-widest text-zinc-500">Lançar Gasto</h2>
+            <div class="size-12"></div>
         </header>
 
         <div class="flex-1 px-8 flex flex-col justify-around pb-12">
-            <div class="text-center space-y-4">
-                <div class="flex items-center justify-center gap-2">
-                    <span class="text-zinc-600 text-3xl font-light">R$</span>
-                    <span id="display-value" class="text-7xl font-light tracking-tighter">0,00</span>
-                </div>
+            <div class="text-center">
+                <p class="text-zinc-600 text-6xl font-light tracking-tighter mb-2">
+                    <span class="text-2xl font-normal opacity-50">R$</span> <span id="display-value">0,00</span>
+                </p>
             </div>
 
-            <!-- KEYPAD -->
+            <!-- TECLADO FÍSICO (CORRIGIDO) -->
             <div class="grid grid-cols-3 gap-4 max-w-sm mx-auto w-full">
-                {[1,2,3,4,5,6,7,8,9,'00',0,'del'].map(key => `
-                    <button class="h-20 text-3xl font-light rounded-[2rem] active:bg-zinc-800/50 transition-colors flex items-center justify-center" 
-                            onclick="pressKey('${key}')">
-                        ${key === 'del' ? '<span class="material-symbols-rounded">backspace</span>' : key}
-                    </button>
-                `).join('')}
+                <button onclick="pressKey('1')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">1</button>
+                <button onclick="pressKey('2')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">2</button>
+                <button onclick="pressKey('3')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">3</button>
+                <button onclick="pressKey('4')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">4</button>
+                <button onclick="pressKey('5')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">5</button>
+                <button onclick="pressKey('6')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">6</button>
+                <button onclick="pressKey('7')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">7</button>
+                <button onclick="pressKey('8')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">8</button>
+                <button onclick="pressKey('9')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">9</button>
+                <button onclick="pressKey('00')" class="h-16 text-lg font-light rounded-2xl active:bg-zinc-800 transition-colors">00</button>
+                <button onclick="pressKey('0')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-800 transition-colors">0</button>
+                <button onclick="pressKey('del')" class="h-16 flex items-center justify-center rounded-2xl active:bg-zinc-800 transition-colors">
+                    <span class="material-symbols-rounded">backspace</span>
+                </button>
             </div>
 
-            <button onclick="confirmGasto()" class="w-full bg-primary-green text-bg-black font-bold h-20 rounded-[2.5rem] text-lg active:scale-95 transition-transform shadow-[0_20px_50px_rgba(45,212,191,0.2)]">
+            <button onclick="confirmGasto()" class="w-full bg-primary-green text-bg-black font-bold h-20 rounded-[2rem] text-lg active:scale-95 transition-transform shadow-lg">
                 Registrar Gasto
             </button>
         </div>
     </div>
 
-    <!-- BOTTOM NAV -->
-    <nav class="fixed bottom-0 inset-x-0 bg-bg-black/90 backdrop-blur-2xl border-t border-white/5 px-10 pt-6 pb-12 flex justify-between items-center z-40">
-        <button class="text-primary-green"><span class="material-symbols-rounded !text-3xl font-variation-fill">grid_view</span></button>
+    <!-- NAV BAR -->
+    <nav class="fixed bottom-0 inset-x-0 bg-bg-black/90 backdrop-blur-2xl border-t border-white/5 px-10 pt-6 pb-10 flex justify-between items-end z-40">
+        <button class="text-primary-green"><span class="material-symbols-rounded !text-3xl">grid_view</span></button>
         <button class="text-zinc-600"><span class="material-symbols-rounded !text-3xl">analytics</span></button>
-        <div onclick="openAddGasto('Geral')" class="size-16 bg-white text-black rounded-[2rem] -mt-20 shadow-2xl flex items-center justify-center active:rotate-90 transition-all duration-500">
+        <div onclick="openAddGasto('Geral')" class="size-16 bg-white text-black rounded-[2rem] -mb-2 shadow-2xl flex items-center justify-center active:scale-90 transition-all">
             <span class="material-symbols-rounded !text-4xl font-bold">add</span>
         </div>
         <button class="text-zinc-600"><span class="material-symbols-rounded !text-3xl">receipt</span></button>
@@ -194,7 +188,7 @@
 
     <script>
         let state = {
-            saldoInicial: 10000,
+            saldoMensal: 10000,
             transactions: [],
             currentCategory: "Geral"
         };
@@ -202,70 +196,60 @@
         let currentInput = "0";
 
         function init() {
-            const saved = localStorage.getItem('finance_data_v2');
+            const saved = localStorage.getItem('familia_data_final');
             if (saved) state = JSON.parse(saved);
             updateAIInsight();
             render();
         }
 
         function save() {
-            localStorage.setItem('finance_data_v2', JSON.stringify(state));
+            localStorage.setItem('familia_data_final', JSON.stringify(state));
             updateAIInsight();
             render();
         }
 
-        function updateAIInsight() {
-            const totalGastos = state.transactions.reduce((acc, t) => acc + t.amount, 0);
-            const malueSpent = state.transactions.filter(t => t.category === "Maria Luiza").reduce((acc, t) => acc + t.amount, 0);
-            const aiText = document.getElementById('ai-text');
-            const aiLoading = document.getElementById('ai-loading');
-
-            setTimeout(() => {
-                aiLoading.classList.add('hidden');
-                if (totalGastos === 0) {
-                    aiText.innerText = "Olá Carol e Deivid! Comece a registrar para que eu possa analisar sua economia este mês.";
-                } else if (malueSpent > 500) {
-                    aiText.innerText = "Atenção: Os gastos com a Malu estão 15% acima da média. Considere revisar as compras não essenciais desta semana.";
-                } else if (totalGastos > 5000) {
-                    aiText.innerText = "Ritmo alto! Se continuar assim, você terminará o mês com R$ " + (state.saldoInicial - (totalGastos * 1.5)).toFixed(0) + ". Tente segurar gastos extras.";
-                } else {
-                    aiText.innerText = "Parabéns! Sua taxa de economia está excelente. Você pode investir R$ 800 a mais este mês.";
-                }
-            }, 1000);
-        }
-
         function render() {
             const totalGastos = state.transactions.reduce((acc, t) => acc + t.amount, 0);
-            const saldoAtual = state.saldoInicial - totalGastos;
-            const metaPerc = Math.round((saldoAtual / state.saldoInicial) * 100);
+            const saldoAtual = state.saldoMensal - totalGastos;
+            const metaPerc = Math.max(0, Math.round((saldoAtual / state.saldoMensal) * 100));
 
             document.getElementById('saldo-total').innerText = formatCurrency(saldoAtual);
             document.getElementById('gastos-mes').innerText = "R$ " + formatCurrency(totalGastos);
             document.getElementById('meta-percent').innerText = metaPerc + '%';
             document.getElementById('meta-bar').style.width = metaPerc + '%';
             
-            const monthText = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date());
-            document.getElementById('current-month').innerText = monthText;
-
             const list = document.getElementById('transactions-list');
             list.innerHTML = state.transactions.length === 0 
-                ? '<div class="py-12 text-center text-zinc-600 text-xs font-bold uppercase tracking-widest opacity-30">Sem movimentação</div>'
+                ? '<div class="py-10 text-center text-zinc-700 text-xs font-bold uppercase tracking-widest opacity-40">Nenhum gasto registrado</div>'
                 : state.transactions.map(t => `
                     <div class="glass p-5 rounded-[2rem] flex items-center justify-between border-white/5">
                         <div class="flex items-center gap-4">
-                            <div class="size-12 bg-zinc-800 rounded-2xl flex items-center justify-center">
-                                <span class="material-symbols-rounded text-xl ${t.category === 'Maria Luiza' ? 'text-blue-400' : 'text-zinc-400'}">
+                            <div class="size-11 bg-zinc-800 rounded-2xl flex items-center justify-center">
+                                <span class="material-symbols-rounded text-lg ${t.category === 'Maria Luiza' ? 'text-blue-400' : 'text-zinc-400'}">
                                     ${t.category === 'Maria Luiza' ? 'child_care' : (t.category === 'Mercado' ? 'shopping_cart' : 'payments')}
                                 </span>
                             </div>
                             <div>
                                 <p class="text-sm font-bold">${t.category}</p>
-                                <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">${t.date}</p>
+                                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">${t.date}</p>
                             </div>
                         </div>
                         <span class="text-sm font-bold text-rose-400">− R$ ${formatCurrency(t.amount)}</span>
                     </div>
                 `).join('');
+        }
+
+        function updateAIInsight() {
+            const totalGastos = state.transactions.reduce((acc, t) => acc + t.amount, 0);
+            const aiText = document.getElementById('ai-text');
+            
+            if (totalGastos === 0) {
+                aiText.innerText = "Olá! Comece a registrar para eu analisar sua saúde financeira.";
+            } else if (totalGastos > 5000) {
+                aiText.innerText = "Cuidado Carol e Deivid! Vocês já usaram 50% do orçamento. Tente economizar na categoria Geral esta semana.";
+            } else {
+                aiText.innerText = "Sua economia está excelente! Se continuar assim, vocês terão R$ " + formatCurrency(state.saldoMensal - totalGastos) + " livre no final do mês.";
+            }
         }
 
         function pressKey(key) {
@@ -278,7 +262,6 @@
                 else currentInput += key;
             }
             updateDisplay();
-            if(window.navigator.vibrate) window.navigator.vibrate(5);
         }
 
         function updateDisplay() {
@@ -290,19 +273,22 @@
             state.currentCategory = cat;
             document.getElementById('sheet-title').innerText = "Lançar: " + cat;
             document.getElementById('add-gasto-sheet').classList.remove('sheet-hidden');
-            document.getElementById('home-screen').classList.add('scale-95', 'opacity-40', 'blur-sm');
+            document.getElementById('home-screen').classList.add('scale-95', 'opacity-50', 'blur-sm');
             currentInput = "0";
             updateDisplay();
         }
 
         function closeAddGasto() {
             document.getElementById('add-gasto-sheet').classList.add('sheet-hidden');
-            document.getElementById('home-screen').classList.remove('scale-95', 'opacity-40', 'blur-sm');
+            document.getElementById('home-screen').classList.remove('scale-95', 'opacity-50', 'blur-sm');
         }
 
         function confirmGasto() {
             const amount = parseFloat(currentInput) / 100;
-            if (amount <= 0) return;
+            if (amount <= 0) {
+                alert("Por favor, insira um valor válido.");
+                return;
+            }
 
             state.transactions.unshift({
                 id: Date.now(),
@@ -316,7 +302,7 @@
         }
 
         function resetData() {
-            if(confirm("Reiniciar orçamento do mês?")) {
+            if(confirm("Deseja apagar todos os lançamentos?")) {
                 state.transactions = [];
                 save();
             }
