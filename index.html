@@ -3,18 +3,19 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>Família em Ordem - Pro</title>
+    <title>Família em Ordem Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        "brand-green": "#2ecc71",
-                        "bg-soft": "#F8F9FA",
-                        "card-white": "#FFFFFF"
+                        "bg-black": "#050505",
+                        "primary-teal": "#2DD4BF",
+                        "ai-purple": "#A78BFA",
+                        "card-zinc": "#121214"
                     },
                     fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
                 }
@@ -22,258 +23,272 @@
         }
     </script>
     <style>
-        body { background-color: #F8F9FA; -webkit-tap-highlight-color: transparent; }
-        .screen { display: none; min-height: 100vh; padding-bottom: 120px; }
-        .screen.active { display: block; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .bottom-sheet { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
+        body { background-color: #050505; color: white; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .screen { display: none; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        .screen.active { display: flex; flex-direction: column; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .bottom-sheet { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
         .sheet-hidden { transform: translateY(110%); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="text-zinc-800 font-sans">
+<body class="font-sans overflow-hidden hide-scroll">
 
-    <!-- TELA 1: DASHBOARD -->
-    <div id="screen-home" class="screen active">
-        <header class="px-6 pt-12 pb-6 flex items-center justify-between">
+    <!-- TELAS DO APP -->
+    
+    <!-- TELA 1: HOME (DASHBOARD) -->
+    <div id="screen-home" class="screen active overflow-y-auto pb-40 hide-scroll">
+        <header class="px-6 pt-12 pb-6 flex items-center justify-between sticky top-0 bg-bg-black/90 backdrop-blur-md z-30">
             <div class="flex items-center gap-3">
-                <div class="size-10 rounded-full bg-brand-green/10 flex items-center justify-center">
-                    <span class="material-symbols-rounded text-brand-green">family_restroom</span>
+                <div class="size-10 rounded-2xl bg-zinc-800 flex items-center justify-center border border-white/10">
+                    <span class="material-symbols-rounded text-primary-teal">family_restroom</span>
                 </div>
                 <div>
-                    <h1 class="text-xs text-zinc-400 font-bold uppercase tracking-widest">Família em Ordem</h1>
-                    <p class="text-lg font-bold">Olá, Carol & Deivid!</p>
+                    <h1 class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Fevereiro 2026</h1>
+                    <p class="text-sm font-bold">Olá, Carol & Deivid</p>
                 </div>
             </div>
-            <button class="size-10 rounded-xl bg-white shadow-sm flex items-center justify-center border border-zinc-100">
-                <span class="material-symbols-rounded text-zinc-400">notifications</span>
-            </button>
+            <button class="size-10 rounded-xl glass flex items-center justify-center"><span class="material-symbols-rounded text-zinc-400">notifications</span></button>
         </header>
 
-        <main class="px-6 space-y-6">
-            <div class="bg-emerald-50 p-6 rounded-[2.5rem] border border-emerald-100 relative overflow-hidden">
-                <div class="bg-brand-green text-white text-[10px] font-bold px-3 py-1 rounded-full w-fit mb-4 uppercase">Janeiro 2026</div>
-                <p class="text-emerald-800/60 text-[11px] font-bold uppercase tracking-wider">Saldo Disponível</p>
-                <h2 class="text-4xl font-bold text-brand-green my-1">R$ <span id="dash-saldo">0,00</span></h2>
-                <div class="mt-4 flex justify-between text-[10px] font-bold text-emerald-800/40 uppercase">
-                    <span>Orçamento Mensal</span>
-                    <span id="dash-perc">0% Utilizado</span>
-                </div>
-                <div class="h-1.5 w-full bg-white rounded-full mt-2 overflow-hidden">
-                    <div id="dash-bar" class="h-full bg-brand-green transition-all duration-1000" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <section>
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-sm">Categorias Rápidas</h3>
-                    <button class="text-brand-green text-xs font-bold">Ver tudo</button>
-                </div>
-                <div class="grid grid-cols-4 gap-4">
-                    <div onclick="openAddGasto('Igreja')" class="flex flex-col items-center gap-2">
-                        <div class="size-14 bg-white rounded-2xl shadow-sm border border-zinc-50 flex items-center justify-center"><span class="material-symbols-rounded text-brand-green">church</span></div>
-                        <span class="text-[10px] font-medium text-zinc-500">Igreja</span>
+        <main class="px-6 space-y-8">
+            <section class="p-8 rounded-[2.5rem] bg-gradient-to-br from-zinc-900 to-black border border-white/5 shadow-2xl">
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Saldo Restante</p>
+                <h2 class="text-4xl font-semibold tracking-tighter">R$ <span id="dash-saldo">0,00</span></h2>
+                
+                <div class="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-white/5">
+                    <div>
+                        <p class="text-[10px] font-bold text-zinc-500 uppercase mb-1">Total Gasto</p>
+                        <p id="dash-gastos" class="text-lg font-bold text-rose-400">R$ 0,00</p>
                     </div>
-                    <div onclick="navigate('screen-malu')" class="flex flex-col items-center gap-2">
-                        <div class="size-14 bg-pink-50 rounded-2xl border border-pink-100 flex items-center justify-center"><span class="material-symbols-rounded text-pink-400">child_care</span></div>
-                        <span class="text-[10px] font-medium text-zinc-500">Malu</span>
-                    </div>
-                    <div onclick="openAddGasto('Timão')" class="flex flex-col items-center gap-2">
-                        <div class="size-14 bg-orange-50 rounded-2xl border border-orange-100 flex items-center justify-center"><span class="material-symbols-rounded text-orange-400">pets</span></div>
-                        <span class="text-[10px] font-medium text-zinc-500">Timão</span>
-                    </div>
-                    <div onclick="openAddGasto('Contas')" class="flex flex-col items-center gap-2">
-                        <div class="size-14 bg-blue-50 rounded-2xl border border-blue-100 flex items-center justify-center"><span class="material-symbols-rounded text-blue-400">payments</span></div>
-                        <span class="text-[10px] font-medium text-zinc-500">Contas</span>
+                    <div>
+                        <p class="text-[10px] font-bold text-zinc-500 uppercase mb-1">Economia</p>
+                        <p id="dash-perc" class="text-lg font-bold text-primary-teal">0%</p>
                     </div>
                 </div>
             </section>
+
+            <!-- INSIGHT IA -->
+            <div class="glass p-5 rounded-3xl border-l-4 border-l-ai-purple flex gap-4">
+                <span class="material-symbols-rounded text-ai-purple animate-pulse">psychology</span>
+                <p id="ai-insight" class="text-xs text-zinc-300 leading-relaxed">Carregando análise...</p>
+            </div>
+
+            <!-- BOTÕES DE CATEGORIA UX -->
+            <div class="grid grid-cols-4 gap-4">
+                <button onclick="openAddGasto('Igreja')" class="flex flex-col items-center gap-2">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-primary-teal"><span class="material-symbols-rounded">church</span></div>
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase">Igreja</span>
+                </button>
+                <button onclick="openAddGasto('Malu')" class="flex flex-col items-center gap-2">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-pink-400"><span class="material-symbols-rounded">child_care</span></div>
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase">Malu</span>
+                </button>
+                <button onclick="openAddGasto('Timão')" class="flex flex-col items-center gap-2">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-orange-400"><span class="material-symbols-rounded">pets</span></div>
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase">Timão</span>
+                </button>
+                <button onclick="openAddGasto('Aleatório')" class="flex flex-col items-center gap-2">
+                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-zinc-400"><span class="material-symbols-rounded">category</span></div>
+                    <span class="text-[9px] font-bold text-zinc-500 uppercase">Variados</span>
+                </button>
+            </div>
         </main>
     </div>
 
-    <!-- TELA 2: RESUMO VISUAL (DONUT) -->
-    <div id="screen-summary" class="screen">
-        <header class="p-8 text-center"><h2 class="font-bold">Resumo Visual</h2></header>
-        <div class="px-8 flex flex-col items-center">
-            <div class="relative size-64 flex items-center justify-center mb-8">
-                <svg class="size-full rotate-[-90deg]">
-                    <circle cx="128" cy="128" r="100" fill="transparent" stroke="#f1f5f9" stroke-width="25"/>
-                    <circle id="donut-progress" cx="128" cy="128" r="100" fill="transparent" stroke="#2ecc71" stroke-width="25" stroke-dasharray="628" stroke-dashoffset="628" stroke-linecap="round"/>
-                </svg>
-                <div class="absolute text-center">
-                    <p class="text-[10px] font-bold text-zinc-400 uppercase">Total Gasto</p>
-                    <p class="text-2xl font-bold">R$ <span id="summary-total">0,00</span></p>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4 w-full" id="summary-categories">
-                <!-- Inserido via JS -->
-            </div>
+    <!-- TELA 2: ESTATÍSTICAS -->
+    <div id="screen-stats" class="screen overflow-y-auto px-6 pt-16">
+        <h2 class="text-xl font-bold mb-6">Análise de Gastos</h2>
+        <div id="stats-list" class="space-y-4"></div>
+    </div>
+
+    <!-- TELA 3: EXTRATO -->
+    <div id="screen-list" class="screen overflow-y-auto px-6 pt-16 pb-40">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">Lançamentos</h2>
+            <button onclick="resetData()" class="text-[10px] font-bold text-rose-500/50 uppercase">Resetar Tudo</button>
+        </div>
+        <div id="full-list" class="space-y-3"></div>
+    </div>
+
+    <!-- TELA 4: AJUSTES -->
+    <div id="screen-settings" class="screen flex items-center justify-center p-12 text-center">
+        <div class="space-y-4">
+            <span class="material-symbols-rounded text-6xl text-zinc-700">settings</span>
+            <p class="text-zinc-500">Configurações do Perfil e App disponíveis em breve.</p>
         </div>
     </div>
 
-    <!-- TELA 3: EXTRATO DETALHADO -->
-    <div id="screen-statement" class="screen">
-        <header class="p-8"><h2 class="font-bold text-center">Extrato de Janeiro</h2></header>
-        <div class="px-6 space-y-4" id="statement-list">
-            <!-- Inserido via JS -->
-        </div>
-    </div>
-
-    <!-- TELA 4: ESPAÇO MARIA LUIZA -->
-    <div id="screen-malu" class="screen">
-        <header class="px-6 pt-12 text-center flex flex-col items-center">
-            <div class="size-20 rounded-full border-4 border-brand-green/20 p-1 mb-4">
-                <div class="size-full bg-pink-100 rounded-full flex items-center justify-center"><span class="material-symbols-rounded text-4xl text-pink-400">child_care</span></div>
-            </div>
-            <h2 class="font-bold text-xl">Maria Luiza</h2>
-            <p class="text-xs text-zinc-400">4 meses • Filha de Carol & Deivid</p>
-            <div class="bg-zinc-100 px-6 py-4 rounded-3xl mt-6 w-full text-center">
-                <p class="text-[10px] font-bold text-zinc-400 uppercase">Total Malu (Este Mês)</p>
-                <p class="text-2xl font-bold text-zinc-800">R$ <span id="malu-total">0,00</span></p>
-            </div>
-        </header>
-        <div class="px-6 mt-8 space-y-4">
-            <h3 class="font-bold text-sm">Lançamentos Recentes</h3>
-            <div id="malu-list" class="space-y-2"></div>
-        </div>
-    </div>
-
-    <!-- ADD GASTO BOTTOM SHEET -->
-    <div id="sheet-overlay" class="fixed inset-0 bg-black/40 hidden z-[90]" onclick="closeAddGasto()"></div>
-    <div id="add-gasto-sheet" class="fixed bottom-0 inset-x-0 bg-white rounded-t-[3rem] p-8 bottom-sheet sheet-hidden">
-        <div class="w-12 h-1 bg-zinc-200 rounded-full mx-auto mb-8"></div>
-        <h2 id="sheet-title" class="text-center font-bold text-zinc-400 uppercase text-xs tracking-widest mb-6">Novo Gasto</h2>
+    <!-- BOTTOM SHEET: LANÇAR GASTO -->
+    <div id="sheet-overlay" class="fixed inset-0 bg-black/60 hidden z-[90]" onclick="closeAddGasto()"></div>
+    <div id="add-sheet" class="fixed bottom-0 inset-x-0 bg-bg-black border-t border-white/10 rounded-t-[3rem] bottom-sheet sheet-hidden flex flex-col p-8">
+        <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-8"></div>
+        <h3 id="sheet-title" class="text-center text-zinc-500 font-bold uppercase text-[10px] tracking-widest mb-4">Novo Gasto</h3>
         <div class="text-center mb-10">
-            <span class="text-4xl font-bold text-zinc-800 tracking-tighter">R$ <span id="display-value">0,00</span></span>
+            <p class="text-6xl font-light tracking-tighter">R$ <span id="display-value">0,00</span></p>
         </div>
-        <div class="grid grid-cols-3 gap-4 max-w-xs mx-auto mb-8">
-            <button onclick="pressKey('1')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">1</button>
-            <button onclick="pressKey('2')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">2</button>
-            <button onclick="pressKey('3')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">3</button>
-            <button onclick="pressKey('4')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">4</button>
-            <button onclick="pressKey('5')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">5</button>
-            <button onclick="pressKey('6')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">6</button>
-            <button onclick="pressKey('7')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">7</button>
-            <button onclick="pressKey('8')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">8</button>
-            <button onclick="pressKey('9')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">9</button>
-            <button onclick="pressKey('00')" class="h-14 text-lg font-semibold rounded-2xl active:bg-zinc-50">00</button>
-            <button onclick="pressKey('0')" class="h-14 text-2xl font-semibold rounded-2xl active:bg-zinc-50">0</button>
-            <button onclick="pressKey('del')" class="h-14 flex items-center justify-center rounded-2xl active:bg-zinc-50"><span class="material-symbols-rounded">backspace</span></button>
+        
+        <div class="grid grid-cols-3 gap-4 max-w-sm mx-auto w-full mb-10">
+            <button onclick="pressKey('1')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">1</button>
+            <button onclick="pressKey('2')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">2</button>
+            <button onclick="pressKey('3')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">3</button>
+            <button onclick="pressKey('4')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">4</button>
+            <button onclick="pressKey('5')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">5</button>
+            <button onclick="pressKey('6')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">6</button>
+            <button onclick="pressKey('7')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">7</button>
+            <button onclick="pressKey('8')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">8</button>
+            <button onclick="pressKey('9')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">9</button>
+            <button onclick="pressKey('00')" class="h-16 text-lg font-light rounded-2xl active:bg-zinc-900 transition-all">00</button>
+            <button onclick="pressKey('0')" class="h-16 text-3xl font-light rounded-2xl active:bg-zinc-900 transition-all">0</button>
+            <button onclick="pressKey('del')" class="h-16 flex items-center justify-center rounded-2xl active:bg-zinc-900 transition-all"><span class="material-symbols-rounded">backspace</span></button>
         </div>
-        <button onclick="confirmGasto()" class="w-full bg-brand-green text-white font-bold h-16 rounded-[2rem] shadow-xl shadow-emerald-200 active:scale-95 transition-all">Confirmar Lançamento</button>
+
+        <button onclick="confirmGasto()" class="w-full bg-primary-teal text-black font-bold h-20 rounded-[2rem] active:scale-95 transition-all text-lg shadow-xl">Confirmar Registro</button>
     </div>
 
-    <!-- NAV BAR -->
-    <nav class="fixed bottom-6 inset-x-6 bg-white/80 backdrop-blur-xl border border-zinc-100 h-20 rounded-[2.5rem] flex justify-around items-center px-4 shadow-xl z-40">
-        <button onclick="navigate('screen-home')" class="nav-btn text-brand-green"><span class="material-symbols-rounded !text-3xl">grid_view</span></button>
-        <button onclick="navigate('screen-summary')" class="nav-btn text-zinc-300"><span class="material-symbols-rounded !text-3xl">donut_small</span></button>
-        <div onclick="openAddGasto('Geral')" class="size-14 bg-brand-green text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all -mt-12 border-4 border-bg-soft">
+    <!-- NAVBAR (UX VALIDADA) -->
+    <nav class="fixed bottom-0 inset-x-0 bg-bg-black/95 backdrop-blur-2xl border-t border-white/5 h-24 px-8 flex justify-between items-center z-50">
+        <button onclick="navigate('screen-home')" class="nav-item p-4 text-primary-teal transition-all"><span class="material-symbols-rounded !text-3xl">home</span></button>
+        <button onclick="navigate('screen-stats')" class="nav-item p-4 text-zinc-600 transition-all"><span class="material-symbols-rounded !text-3xl">insights</span></button>
+        
+        <div onclick="openAddGasto('Geral')" class="size-16 bg-white text-black rounded-2xl -mt-14 shadow-2xl flex items-center justify-center active:scale-90 transition-all border-4 border-bg-black">
             <span class="material-symbols-rounded !text-4xl font-bold">add</span>
         </div>
-        <button onclick="navigate('screen-statement')" class="nav-btn text-zinc-300"><span class="material-symbols-rounded !text-3xl">receipt_long</span></button>
-        <button onclick="navigate('screen-malu')" class="nav-btn text-zinc-300"><span class="material-symbols-rounded !text-3xl">child_care</span></button>
+
+        <button onclick="navigate('screen-list')" class="nav-item p-4 text-zinc-600 transition-all"><span class="material-symbols-rounded !text-3xl">receipt_long</span></button>
+        <button onclick="navigate('screen-settings')" class="nav-item p-4 text-zinc-600 transition-all"><span class="material-symbols-rounded !text-3xl">person</span></button>
     </nav>
 
     <script>
-        let state = {
-            income: 10000,
-            transactions: [],
-            currentCat: 'Geral'
+        // DADOS REAIS DE FEVEREIRO CONFORME SOLICITADO
+        const INITIAL_DATA = {
+            receita: 10000,
+            transactions: [
+                { cat: 'Igreja', desc: 'Dízimo Studio', valor: 323.93, date: '21/01' },
+                { cat: 'Igreja', desc: 'Dízimo Bradesco', valor: 287.00, date: '22/01' },
+                { cat: 'Fixo', desc: 'Condomínio Ap.', valor: 434.00, date: '05/02' },
+                { cat: 'Fixo', desc: 'Parcela Caixa', valor: 1283.00, date: '10/02' },
+                { cat: 'Cartão', desc: 'Fatura Bradesco', valor: 2379.00, date: '15/02' },
+                { cat: 'Malu', desc: 'Nan + Amazon', valor: 1893.00, date: '03/02' },
+                { cat: 'Beleza', desc: 'Cabelo/Mão/Pé', valor: 660.00, date: '13/02' },
+                { cat: 'Aleatório', desc: 'Compras Variadas', valor: 1858.00, date: '16/02' },
+                { cat: 'Carro', desc: 'Gasolina Fox', valor: 500.00, date: '15/02' }
+            ]
         };
 
+        let state = JSON.parse(localStorage.getItem('familia_pro_v3')) || INITIAL_DATA;
         let currentInput = "0";
+        let activeCategory = "Geral";
 
         function init() {
-            const saved = localStorage.getItem('familia_data');
-            if (saved) state = JSON.parse(saved);
             render();
         }
 
-        function navigate(id) {
+        function navigate(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.add('text-zinc-300'));
-            // Lógica simples de cor do ícone
-            render();
+            document.getElementById(screenId).classList.add('active');
+            
+            // UI Update do ícone ativo
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.replace('text-primary-teal', 'text-zinc-600'));
+            event.currentTarget.classList.replace('text-zinc-600', 'text-primary-teal');
         }
 
         function render() {
-            const total = state.transactions.reduce((a, b) => a + b.amount, 0);
-            const balance = state.income - total;
-            const perc = Math.min(Math.round((total / state.income) * 100), 100);
+            const totalGastos = state.transactions.reduce((acc, t) => acc + t.valor, 0);
+            const saldo = state.receita - totalGastos;
+            const perc = Math.max(0, Math.round((saldo / state.receita) * 100));
 
             // Dashboard
-            document.getElementById('dash-saldo').innerText = format(balance);
-            document.getElementById('dash-perc').innerText = perc + "% Utilizado";
-            document.getElementById('dash-bar').style.width = perc + "%";
+            document.getElementById('dash-saldo').innerText = saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById('dash-gastos').innerText = "R$ " + totalGastos.toLocaleString('pt-BR');
+            document.getElementById('dash-perc').innerText = perc + "%";
 
-            // Resumo
-            document.getElementById('summary-total').innerText = format(total);
-            const offset = 628 - (628 * (total / state.income));
-            document.getElementById('donut-progress').style.strokeDashoffset = isNaN(offset) ? 628 : Math.max(0, offset);
-
-            // Extrato
-            const list = document.getElementById('statement-list');
-            list.innerHTML = state.transactions.length ? state.transactions.map(t => `
-                <div class="bg-white p-4 rounded-3xl flex justify-between items-center shadow-sm">
-                    <div class="flex gap-3 items-center">
-                        <div class="size-10 bg-zinc-50 rounded-xl flex items-center justify-center text-zinc-400">
-                            <span class="material-symbols-rounded text-sm">payments</span>
+            // Listas
+            const fullList = document.getElementById('full-list');
+            fullList.innerHTML = state.transactions.map(t => `
+                <div class="glass p-5 rounded-[2rem] flex justify-between items-center">
+                    <div class="flex gap-4 items-center">
+                        <div class="size-11 bg-zinc-800 rounded-2xl flex items-center justify-center">
+                            <span class="material-symbols-rounded text-zinc-400 text-lg">${getIcon(t.cat)}</span>
                         </div>
                         <div>
-                            <p class="text-xs font-bold">${t.category}</p>
-                            <p class="text-[9px] text-zinc-400 font-bold uppercase">${t.date}</p>
+                            <p class="text-sm font-bold">${t.desc}</p>
+                            <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">${t.cat} • ${t.date}</p>
                         </div>
                     </div>
-                    <span class="font-bold text-sm text-rose-500">- R$ ${format(t.amount)}</span>
-                </div>
-            `).join('') : '<p class="text-center text-xs text-zinc-400 py-20 uppercase font-bold tracking-widest opacity-30">Nenhum gasto</p>';
-
-            // Malu
-            const maluTotal = state.transactions.filter(t => t.category === 'Maria Luiza').reduce((a,b) => a+b.amount, 0);
-            document.getElementById('malu-total').innerText = format(maluTotal);
-            document.getElementById('malu-list').innerHTML = state.transactions.filter(t => t.category === 'Maria Luiza').map(t => `
-                 <div class="bg-white p-3 rounded-2xl flex justify-between items-center">
-                    <span class="text-[10px] font-bold text-zinc-400">${t.date}</span>
-                    <span class="font-bold text-xs text-rose-400">- R$ ${format(t.amount)}</span>
+                    <p class="text-sm font-bold text-rose-400">- R$ ${t.valor.toLocaleString('pt-BR')}</p>
                 </div>
             `).join('');
+
+            // IA Insight
+            const aleatorio = state.transactions.filter(t => t.cat === 'Aleatório').reduce((a,b) => a+b.valor, 0);
+            const aiInsight = document.getElementById('ai-insight');
+            if(aleatorio > 1500) {
+                aiInsight.innerText = "Carol & Deivid, identifiquei R$ " + aleatorio.toFixed(0) + " em gastos 'Aleatórios'. Reduzindo isso, vocês dobram a economia do mês.";
+            } else {
+                aiInsight.innerText = "Sua saúde financeira está excelente. Maria Luiza tem tudo garantido e o Fox está abastecido!";
+            }
         }
 
-        function pressKey(k) {
-            if(k === 'del') currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : "0";
-            else if(currentInput === "0") currentInput = k;
-            else currentInput += k;
-            document.getElementById('display-value').innerText = (parseFloat(currentInput)/100).toLocaleString('pt-BR', {minimumFractionDigits:2});
+        function pressKey(key) {
+            if (key === 'del') {
+                currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : "0";
+            } else if (key === '00') {
+                currentInput += "00";
+            } else {
+                if (currentInput === "0") currentInput = key;
+                else currentInput += key;
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const val = parseFloat(currentInput) / 100;
+            document.getElementById('display-value').innerText = val.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
         }
 
         function openAddGasto(cat) {
-            state.currentCat = cat === 'Malu' ? 'Maria Luiza' : cat;
-            document.getElementById('sheet-title').innerText = "Novo Gasto: " + state.currentCat;
-            document.getElementById('add-gasto-sheet').classList.remove('sheet-hidden');
+            activeCategory = cat;
+            document.getElementById('sheet-title').innerText = "Lançar em: " + cat;
+            document.getElementById('add-sheet').classList.remove('sheet-hidden');
             document.getElementById('sheet-overlay').classList.remove('hidden');
             currentInput = "0";
-            document.getElementById('display-value').innerText = "0,00";
+            updateDisplay();
         }
 
         function closeAddGasto() {
-            document.getElementById('add-gasto-sheet').classList.add('sheet-hidden');
+            document.getElementById('add-sheet').classList.add('sheet-hidden');
             document.getElementById('sheet-overlay').classList.add('hidden');
         }
 
         function confirmGasto() {
-            const amount = parseFloat(currentInput)/100;
-            if(amount <= 0) return;
+            const amount = parseFloat(currentInput) / 100;
+            if (amount <= 0) return;
+
             state.transactions.unshift({
-                category: state.currentCat,
-                amount: amount,
-                date: new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'short'})
+                cat: activeCategory,
+                desc: activeCategory === 'Geral' ? 'Novo Gasto' : 'Lançamento ' + activeCategory,
+                valor: amount,
+                date: new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'})
             });
-            localStorage.setItem('familia_data', JSON.stringify(state));
+
+            localStorage.setItem('familia_pro_v3', JSON.stringify(state));
             render();
             closeAddGasto();
         }
 
-        function format(v) { return v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+        function resetData() {
+            if(confirm("Deseja apagar os dados e voltar ao padrão Carol & Deivid?")) {
+                localStorage.setItem('familia_pro_v3', JSON.stringify(INITIAL_DATA));
+                location.reload();
+            }
+        }
+
+        function getIcon(cat) {
+            const icons = { 'Igreja': 'church', 'Malu': 'child_care', 'Timão': 'pets', 'Carro': 'directions_car', 'Cartão': 'credit_card', 'Fixo': 'calendar_month' };
+            return icons[cat] || 'payments';
+        }
 
         init();
     </script>
