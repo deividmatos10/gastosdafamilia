@@ -3,15 +3,20 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>Família em Ordem - App Oficial</title>
+    <title>Família em Ordem</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet"/>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { "bg-black": "#050505", "primary-teal": "#2DD4BF", "ai-purple": "#A78BFA", "card-zinc": "#121214" },
+                    colors: {
+                        "bg-black": "#050505",
+                        "primary-teal": "#2DD4BF",
+                        "ai-purple": "#A78BFA",
+                        "card-zinc": "#121214"
+                    },
                     fontFamily: { "sans": ["Plus Jakarta Sans", "sans-serif"] }
                 }
             }
@@ -19,273 +24,581 @@
     </script>
     <style>
         body { background-color: #050505; color: white; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         .screen { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; }
         .screen.active { display: flex; flex-direction: column; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .bottom-sheet { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
+        .bottom-sheet { transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); z-index: 100; }
         .sheet-hidden { transform: translateY(110%); }
         .hide-scroll::-webkit-scrollbar { display: none; }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.4s ease; }
+
+        #toast {
+            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: #f43f5e; color: white; font-size: .75rem; font-weight: 700;
+            padding: .6rem 1.5rem; border-radius: 999px; z-index: 200;
+            opacity: 0; transition: all 0.3s ease; pointer-events: none; white-space: nowrap;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.success { background: #2DD4BF; color: #000; }
+
+        .nav-btn.active-nav { color: #2DD4BF !important; }
+        .bar-fill { transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+        .key-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.08); }
+        .key-btn { transition: transform 0.1s ease, background 0.1s ease; }
+        input:focus { outline: none; border-color: #2DD4BF !important; box-shadow: 0 0 0 3px rgba(45,212,191,0.15); transition: all 0.2s ease; }
+        .delete-btn:hover { color: #f43f5e; }
+        .delete-btn { transition: color 0.2s; }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 2rem; gap: 1rem; }
     </style>
 </head>
 <body class="font-sans overflow-hidden hide-scroll">
 
-    <!-- HEADER DE VOLTAR (Global para telas internas) -->
-    <header id="sub-header" class="hidden fixed top-0 inset-x-0 h-16 bg-bg-black/90 backdrop-blur-md z-[60] px-6 items-center border-b border-white/5">
-        <button onclick="navigate('screen-home')" class="flex items-center gap-2 text-primary-teal">
-            <span class="material-symbols-rounded">arrow_back_ios</span>
-            <span class="text-sm font-bold uppercase tracking-widest">Voltar</span>
-        </button>
+<div id="toast" role="alert" aria-live="polite"></div>
+
+<header id="sub-header" class="hidden fixed top-0 inset-x-0 h-16 bg-[#050505]/90 backdrop-blur-md z-[60] px-6 items-center border-b border-white/5">
+    <button onclick="navigate('screen-home')" class="flex items-center gap-2 text-primary-teal" aria-label="Voltar para o início">
+        <span class="material-symbols-rounded" aria-hidden="true">arrow_back_ios</span>
+        <span class="text-sm font-bold uppercase tracking-widest">Voltar</span>
+    </button>
+</header>
+
+<!-- TELA 1: DASHBOARD -->
+<div id="screen-home" class="screen active overflow-y-auto pb-40 hide-scroll" role="main" aria-label="Dashboard">
+    <header class="px-6 pt-12 pb-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="size-11 rounded-2xl glass flex items-center justify-center border-primary-teal/20">
+                <span class="material-symbols-rounded text-primary-teal" aria-hidden="true">family_restroom</span>
+            </div>
+            <div>
+                <h1 class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest" id="current-month"></h1>
+                <p class="text-base font-bold"><span id="user-name">Deivid &amp; Carol</span></p>
+            </div>
+        </div>
     </header>
 
-    <!-- TELA 1: DASHBOARD -->
-    <div id="screen-home" class="screen active overflow-y-auto pb-40 hide-scroll">
-        <header class="px-6 pt-12 pb-6 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="size-11 rounded-2xl glass flex items-center justify-center border-primary-teal/20">
-                    <span class="material-symbols-rounded text-primary-teal">family_restroom</span>
-                </div>
-                <div>
-                    <h1 class="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Fevereiro 2026</h1>
-                    <p class="text-base font-bold"><span id="user-name">Deivid & Carol</span></p>
-                </div>
+    <main class="px-6 space-y-6">
+        <section class="p-8 rounded-[2.5rem] bg-gradient-to-br from-zinc-900 to-black border border-white/5" aria-label="Resumo financeiro">
+            <p class="text-[10px] font-bold text-zinc-500 uppercase mb-1 tracking-widest">Saldo Restante</p>
+            <h2 class="text-4xl font-semibold tracking-tighter">R$ <span id="dash-saldo">0,00</span></h2>
+            <div class="h-1.5 w-full bg-zinc-800 rounded-full mt-6 overflow-hidden" role="progressbar" aria-label="Percentual do orçamento gasto" aria-valuemin="0" aria-valuemax="100" id="dash-bar-wrap">
+                <div id="dash-bar" class="h-full bg-primary-teal bar-fill" style="width:0%"></div>
             </div>
-        </header>
-
-        <main class="px-6 space-y-6">
-            <section class="p-8 rounded-[2.5rem] bg-gradient-to-br from-zinc-900 to-black border border-white/5">
-                <p class="text-[10px] font-bold text-zinc-500 uppercase mb-1 tracking-widest">Saldo Restante</p>
-                <h2 class="text-4xl font-semibold tracking-tighter">R$ <span id="dash-saldo">0,00</span></h2>
-                <div class="h-1.5 w-full bg-zinc-800 rounded-full mt-6 overflow-hidden">
-                    <div id="dash-bar" class="h-full bg-primary-teal transition-all duration-1000" style="width: 0%"></div>
-                </div>
-                <div class="flex justify-between mt-4">
-                    <p class="text-[10px] font-bold text-zinc-500 uppercase">Receita: R$ <span id="dash-receita">0,00</span></p>
-                    <p class="text-[10px] font-bold text-rose-400 uppercase">Gastos: R$ <span id="dash-gastos">0,00</span></p>
-                </div>
-            </section>
-
-            <div class="glass p-5 rounded-3xl border-l-4 border-l-ai-purple flex gap-4">
-                <span class="material-symbols-rounded text-ai-purple animate-pulse">psychology</span>
-                <p id="ai-insight" class="text-xs text-zinc-300 leading-relaxed italic">Analisando economia familiar...</p>
+            <div class="flex justify-between mt-4">
+                <p class="text-[10px] font-bold text-zinc-500 uppercase">Receita: R$ <span id="dash-receita">0,00</span></p>
+                <p class="text-[10px] font-bold text-rose-400 uppercase">Gastos: R$ <span id="dash-gastos">0,00</span></p>
             </div>
+        </section>
 
-            <div class="grid grid-cols-4 gap-4">
-                <button onclick="openAddGasto('Igreja')" class="flex flex-col items-center gap-2">
-                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-primary-teal"><span class="material-symbols-rounded">church</span></div>
-                    <span class="text-[9px] font-bold text-zinc-500">Igreja</span>
-                </button>
-                <button onclick="openAddGasto('Malu')" class="flex flex-col items-center gap-2">
-                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-pink-400"><span class="material-symbols-rounded">child_care</span></div>
-                    <span class="text-[9px] font-bold text-zinc-500">Malu</span>
-                </button>
-                <button onclick="openAddGasto('Timão')" class="flex flex-col items-center gap-2">
-                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-orange-400"><span class="material-symbols-rounded">pets</span></div>
-                    <span class="text-[9px] font-bold text-zinc-500">Timão</span>
-                </button>
-                <button onclick="openAddGasto('Aleatório')" class="flex flex-col items-center gap-2">
-                    <div class="size-14 glass rounded-2xl flex items-center justify-center text-zinc-400"><span class="material-symbols-rounded">shopping_bag</span></div>
-                    <span class="text-[9px] font-bold text-zinc-500">Extras</span>
-                </button>
-            </div>
-        </main>
+        <div class="glass p-5 rounded-3xl border-l-4 border-l-ai-purple flex gap-4" role="status" aria-live="polite">
+            <span class="material-symbols-rounded text-ai-purple animate-pulse" aria-hidden="true">psychology</span>
+            <p id="ai-insight" class="text-xs text-zinc-300 leading-relaxed italic">Analisando economia familiar...</p>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4" role="group" aria-label="Adicionar gasto por categoria">
+            <button onclick="openAddGasto('Igreja')" class="flex flex-col items-center gap-2 key-btn" aria-label="Adicionar gasto: Igreja">
+                <div class="size-14 glass rounded-2xl flex items-center justify-center text-primary-teal"><span class="material-symbols-rounded" aria-hidden="true">church</span></div>
+                <span class="text-[9px] font-bold text-zinc-500">Igreja</span>
+            </button>
+            <button onclick="openAddGasto('Malu')" class="flex flex-col items-center gap-2 key-btn" aria-label="Adicionar gasto: Malu">
+                <div class="size-14 glass rounded-2xl flex items-center justify-center text-pink-400"><span class="material-symbols-rounded" aria-hidden="true">child_care</span></div>
+                <span class="text-[9px] font-bold text-zinc-500">Malu</span>
+            </button>
+            <button onclick="openAddGasto('Timão')" class="flex flex-col items-center gap-2 key-btn" aria-label="Adicionar gasto: Timão">
+                <div class="size-14 glass rounded-2xl flex items-center justify-center text-orange-400"><span class="material-symbols-rounded" aria-hidden="true">pets</span></div>
+                <span class="text-[9px] font-bold text-zinc-500">Timão</span>
+            </button>
+            <button onclick="openAddGasto('Aleatório')" class="flex flex-col items-center gap-2 key-btn" aria-label="Adicionar gasto: Extras">
+                <div class="size-14 glass rounded-2xl flex items-center justify-center text-zinc-400"><span class="material-symbols-rounded" aria-hidden="true">shopping_bag</span></div>
+                <span class="text-[9px] font-bold text-zinc-500">Extras</span>
+            </button>
+        </div>
+
+        <div>
+            <p class="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mb-3">Últimos lançamentos</p>
+            <div id="dash-recent" class="space-y-2"></div>
+        </div>
+    </main>
+</div>
+
+<!-- TELA 2: ANÁLISE -->
+<div id="screen-stats" class="screen overflow-y-auto px-6 pt-24 pb-40" role="main" aria-label="Análise de gastos">
+    <h2 class="text-xl font-bold mb-2">Onde está o dinheiro?</h2>
+    <p class="text-xs text-zinc-600 mb-8 font-medium">Distribuição por categoria</p>
+    <div id="stats-chart" class="space-y-6"></div>
+    <div id="stats-empty" class="empty-state hidden">
+        <span class="material-symbols-rounded text-zinc-700 text-5xl" aria-hidden="true">bar_chart</span>
+        <p class="text-zinc-600 text-xs font-bold uppercase tracking-wider">Nenhum gasto ainda</p>
     </div>
+</div>
 
-    <!-- TELA 2: ANÁLISE DE GASTOS -->
-    <div id="screen-stats" class="screen overflow-y-auto px-6 pt-24 pb-40">
-        <h2 class="text-xl font-bold mb-8">Onde está o dinheiro?</h2>
-        <div id="stats-chart" class="space-y-6">
-            <!-- Gerado via JS: Barras de progresso por categoria -->
+<!-- TELA 3: EXTRATO -->
+<div id="screen-list" class="screen overflow-y-auto px-6 pt-24 pb-40" role="main" aria-label="Histórico de transações">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">Histórico</h2>
+        <button onclick="resetData()" class="text-[10px] font-bold text-zinc-600 hover:text-rose-400 transition-colors px-3 py-1 rounded-lg hover:bg-rose-400/10" aria-label="Resetar todos os dados">RESETAR</button>
+    </div>
+    <div id="full-list" class="space-y-3"></div>
+    <div id="list-empty" class="empty-state hidden">
+        <span class="material-symbols-rounded text-zinc-700 text-5xl" aria-hidden="true">receipt_long</span>
+        <p class="text-zinc-600 text-xs font-bold uppercase tracking-wider">Nenhum gasto registrado</p>
+    </div>
+</div>
+
+<!-- TELA 4: CONFIGURAÇÕES -->
+<div id="screen-settings" class="screen px-6 pt-24 pb-40" role="main" aria-label="Configurações">
+    <h2 class="text-xl font-bold mb-8">Configurações Familiares</h2>
+    <div class="space-y-6">
+        <div class="glass p-6 rounded-3xl space-y-4">
+            <label for="input-receita" class="text-[10px] font-bold text-zinc-500 uppercase block">Renda Mensal da Família</label>
+            <input type="number" id="input-receita" min="1" step="0.01"
+                   onchange="updateIncome()"
+                   class="w-full bg-zinc-900 border border-white/10 p-4 rounded-2xl text-xl font-bold"
+                   placeholder="10000"
+                   aria-describedby="receita-hint"/>
+            <p id="receita-hint" class="text-[10px] text-primary-teal tracking-wider">Ajuste aqui o valor total que vocês ganham.</p>
+            <p id="receita-error" class="text-[10px] text-rose-400 hidden" role="alert">Por favor, insira um valor positivo.</p>
+        </div>
+        <div class="glass p-6 rounded-3xl space-y-4">
+            <label for="input-name" class="text-[10px] font-bold text-zinc-500 uppercase block">Nome do Perfil</label>
+            <input type="text" id="input-name"
+                   onchange="updateProfileName()"
+                   class="w-full bg-zinc-900 border border-white/10 p-4 rounded-2xl text-base font-bold"
+                   placeholder="Deivid &amp; Carol"
+                   maxlength="40"
+                   aria-label="Nome do perfil familiar"/>
+        </div>
+        <div class="glass p-6 rounded-3xl space-y-4">
+            <p class="text-[10px] font-bold text-zinc-500 uppercase">Zona de Perigo</p>
+            <button onclick="resetData()" class="w-full bg-rose-500/10 border border-rose-500/20 text-rose-400 font-bold text-sm p-4 rounded-2xl hover:bg-rose-500/20 transition-colors" aria-label="Apagar todos os dados">
+                Apagar todos os gastos
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- TELA 3: EXTRATO (LISTA) -->
-    <div id="screen-list" class="screen overflow-y-auto px-6 pt-24 pb-40">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold">Histórico</h2>
-            <button onclick="resetData()" class="text-[10px] font-bold text-zinc-600">RESETAR</button>
-        </div>
-        <div id="full-list" class="space-y-3"></div>
+<div id="add-sheet-overlay" class="fixed inset-0 bg-black/80 hidden z-[90]" onclick="closeAddGasto()" aria-hidden="true"></div>
+
+<!-- BOTTOM SHEET -->
+<div id="add-sheet" class="fixed bottom-0 inset-x-0 bg-[#0a0a0c] rounded-t-[3rem] bottom-sheet sheet-hidden z-[100] p-8"
+     role="dialog" aria-modal="true" aria-label="Adicionar novo gasto">
+    <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-8"></div>
+    <div class="text-center mb-10">
+        <p id="sheet-title" class="text-zinc-500 font-bold uppercase text-[10px] mb-4">Novo Gasto</p>
+        <p class="text-6xl font-light tracking-tighter" aria-live="polite" aria-atomic="true">
+            R$ <span id="display-value">0,00</span>
+        </p>
+        <p id="sheet-error" class="text-xs text-rose-400 mt-3 hidden" role="alert">Digite um valor maior que zero.</p>
     </div>
-
-    <!-- TELA 4: PERFIL & CONFIGURAÇÕES -->
-    <div id="screen-settings" class="screen px-6 pt-24 pb-40">
-        <h2 class="text-xl font-bold mb-8">Configurações Familiares</h2>
-        <div class="space-y-6">
-            <div class="glass p-6 rounded-3xl space-y-4">
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Renda Mensal da Família</label>
-                <input type="number" id="input-receita" onchange="updateIncome()" class="w-full bg-zinc-900 border border-white/10 p-4 rounded-2xl text-xl font-bold" placeholder="R$ 10.000">
-                <p class="text-[10px] text-primary-teal tracking-wider">Ajuste aqui o valor total que vocês ganham.</p>
-            </div>
-            <div class="glass p-6 rounded-3xl space-y-4">
-                <label class="text-[10px] font-bold text-zinc-500 uppercase">Nome do Perfil</label>
-                <input type="text" id="input-name" onchange="updateProfileName()" class="w-full bg-zinc-900 border border-white/10 p-4 rounded-2xl text-base font-bold" placeholder="Deivid & Carol">
-            </div>
-        </div>
+    <div class="grid grid-cols-3 gap-4 mb-8" role="group" aria-label="Teclado numérico">
+        <button onclick="pressKey('1')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="1">1</button>
+        <button onclick="pressKey('2')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="2">2</button>
+        <button onclick="pressKey('3')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="3">3</button>
+        <button onclick="pressKey('4')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="4">4</button>
+        <button onclick="pressKey('5')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="5">5</button>
+        <button onclick="pressKey('6')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="6">6</button>
+        <button onclick="pressKey('7')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="7">7</button>
+        <button onclick="pressKey('8')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="8">8</button>
+        <button onclick="pressKey('9')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="9">9</button>
+        <button onclick="pressKey('00')" class="h-16 text-lg font-light rounded-2xl glass key-btn" aria-label="double zero">00</button>
+        <button onclick="pressKey('0')" class="h-16 text-2xl font-light rounded-2xl glass key-btn" aria-label="0">0</button>
+        <button onclick="pressKey('del')" class="h-16 flex items-center justify-center rounded-2xl glass key-btn" aria-label="Apagar último dígito">
+            <span class="material-symbols-rounded" aria-hidden="true">backspace</span>
+        </button>
     </div>
+    <button onclick="confirmGasto()" class="w-full bg-primary-teal text-black font-bold h-20 rounded-[2rem] text-lg key-btn transition-all" aria-label="Confirmar e registrar gasto">
+        Registrar Agora
+    </button>
+</div>
 
-    <!-- BOTÃO FLUTUANTE DE ADICIONAR -->
-    <div id="add-sheet-overlay" class="fixed inset-0 bg-black/80 hidden z-[90]" onclick="closeAddGasto()"></div>
-    <div id="add-sheet" class="fixed bottom-0 inset-x-0 bg-bg-black rounded-t-[3rem] bottom-sheet sheet-hidden z-[100] p-8">
-        <div class="w-12 h-1 bg-zinc-800 rounded-full mx-auto mb-8"></div>
-        <div class="text-center mb-10">
-            <p id="sheet-title" class="text-zinc-500 font-bold uppercase text-[10px] mb-4">Novo Gasto</p>
-            <p class="text-6xl font-light tracking-tighter">R$ <span id="display-value">0,00</span></p>
-        </div>
-        <div class="grid grid-cols-3 gap-4 mb-8">
-            <button onclick="pressKey('1')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">1</button>
-            <button onclick="pressKey('2')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">2</button>
-            <button onclick="pressKey('3')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">3</button>
-            <button onclick="pressKey('4')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">4</button>
-            <button onclick="pressKey('5')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">5</button>
-            <button onclick="pressKey('6')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">6</button>
-            <button onclick="pressKey('7')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">7</button>
-            <button onclick="pressKey('8')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">8</button>
-            <button onclick="pressKey('9')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">9</button>
-            <button onclick="pressKey('00')" class="h-16 text-lg font-light rounded-2xl glass active:bg-zinc-800">00</button>
-            <button onclick="pressKey('0')" class="h-16 text-2xl font-light rounded-2xl glass active:bg-zinc-800">0</button>
-            <button onclick="pressKey('del')" class="h-16 flex items-center justify-center rounded-2xl glass active:bg-zinc-800"><span class="material-symbols-rounded">backspace</span></button>
-        </div>
-        <button onclick="confirmGasto()" class="w-full bg-primary-teal text-black font-bold h-20 rounded-[2rem] text-lg active:scale-95 transition-all">Registrar Agora</button>
-    </div>
+<!-- NAVBAR -->
+<nav class="fixed bottom-0 inset-x-0 bg-[#050505]/95 backdrop-blur-2xl border-t border-white/5 h-24 px-8 flex justify-between items-center z-[50]" role="navigation" aria-label="Navegação principal">
+    <button onclick="navigate('screen-home')" class="nav-btn p-4 text-primary-teal active-nav" aria-label="Início" aria-current="page">
+        <span class="material-symbols-rounded !text-3xl" aria-hidden="true">home</span>
+    </button>
+    <button onclick="navigate('screen-stats')" class="nav-btn p-4 text-zinc-600" aria-label="Análise de gastos">
+        <span class="material-symbols-rounded !text-3xl" aria-hidden="true">analytics</span>
+    </button>
+    <button onclick="openAddGasto('Geral')"
+            class="size-16 bg-white text-black rounded-2xl -mt-14 shadow-2xl flex items-center justify-center key-btn transition-all border-4 border-[#050505]"
+            aria-label="Adicionar novo gasto geral">
+        <span class="material-symbols-rounded !text-4xl font-bold" aria-hidden="true">add</span>
+    </button>
+    <button onclick="navigate('screen-list')" class="nav-btn p-4 text-zinc-600" aria-label="Histórico de gastos">
+        <span class="material-symbols-rounded !text-3xl" aria-hidden="true">receipt_long</span>
+    </button>
+    <button onclick="navigate('screen-settings')" class="nav-btn p-4 text-zinc-600" aria-label="Configurações">
+        <span class="material-symbols-rounded !text-3xl" aria-hidden="true">person</span>
+    </button>
+</nav>
 
-    <!-- NAVBAR INFERIOR -->
-    <nav class="fixed bottom-0 inset-x-0 bg-bg-black/95 backdrop-blur-2xl border-t border-white/5 h-24 px-8 flex justify-between items-center z-[50]">
-        <button onclick="navigate('screen-home')" class="nav-btn p-4 text-primary-teal"><span class="material-symbols-rounded !text-3xl">home</span></button>
-        <button onclick="navigate('screen-stats')" class="nav-btn p-4 text-zinc-600"><span class="material-symbols-rounded !text-3xl">analytics</span></button>
-        <div onclick="openAddGasto('Geral')" class="size-16 bg-white text-black rounded-2xl -mt-14 shadow-2xl flex items-center justify-center active:scale-90 transition-all border-4 border-bg-black"><span class="material-symbols-rounded !text-4xl font-bold">add</span></div>
-        <button onclick="navigate('screen-list')" class="nav-btn p-4 text-zinc-600"><span class="material-symbols-rounded !text-3xl">receipt_long</span></button>
-        <button onclick="navigate('screen-settings')" class="nav-btn p-4 text-zinc-600"><span class="material-symbols-rounded !text-3xl">person</span></button>
-    </nav>
+<script>
+    let state = loadState();
 
-    <script>
-        let state = JSON.parse(localStorage.getItem('familia_db_final')) || {
-            name: "Deivid & Carol",
-            receita: 10000,
-            transactions: []
-        };
-
-        let currentInput = "0";
-        let currentCat = "Geral";
-
-        function init() {
-            document.getElementById('input-receita').value = state.receita;
-            document.getElementById('input-name').value = state.name;
-            render();
-        }
-
-        function navigate(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            // Gerenciar botões e header
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('text-primary-teal', 'text-zinc-600'));
-            const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(id));
-            if(activeBtn) activeBtn.classList.replace('text-zinc-600', 'text-primary-teal');
-            
-            document.getElementById('sub-header').classList.toggle('hidden', id === 'screen-home');
-            document.getElementById('sub-header').classList.toggle('flex', id !== 'screen-home');
-            
-            if(id === 'screen-stats') renderStats();
-            render();
-        }
-
-        function render() {
-            const total = state.transactions.reduce((a, b) => a + b.valor, 0);
-            const saldo = state.receita - total;
-            const perc = Math.min(100, Math.round((total / state.receita) * 100));
-
-            document.getElementById('dash-saldo').innerText = format(saldo);
-            document.getElementById('dash-gastos').innerText = format(total);
-            document.getElementById('dash-receita').innerText = format(state.receita);
-            document.getElementById('dash-bar').style.width = perc + "%";
-            document.getElementById('user-name').innerText = state.name;
-
-            // IA Insight
-            const ai = document.getElementById('ai-insight');
-            const extras = state.transactions.filter(t => t.cat === 'Aleatório').reduce((a,b) => a+b.valor,0);
-            if(extras > state.receita * 0.15) {
-                ai.innerText = `Deivid, os gastos 'Extras' (R$ ${format(extras)}) estão altos. Reduzindo 10% aqui, sobra mais para a Maria Luiza.`;
-            } else if(total > state.receita * 0.8) {
-                ai.innerText = "Carol e Deivid, o orçamento está quase no limite (80%). Recomendo evitar compras não essenciais hoje.";
-            } else {
-                ai.innerText = "Excelente gestão! Malu e Timão estão garantidos e vocês ainda têm saldo positivo para investir.";
+    function loadState() {
+        try {
+            const raw = localStorage.getItem('familia_db_v2');
+            const parsed = raw ? JSON.parse(raw) : null;
+            if (parsed && typeof parsed === 'object' && Array.isArray(parsed.transactions)) {
+                return {
+                    name: sanitize(parsed.name || 'Deivid & Carol'),
+                    receita: (typeof parsed.receita === 'number' && parsed.receita > 0) ? parsed.receita : 10000,
+                    transactions: parsed.transactions.map(t => ({
+                        cat: sanitize(String(t.cat || 'Geral')),
+                        valor: Math.abs(parseFloat(t.valor) || 0),
+                        date: sanitize(String(t.date || ''))
+                    })).filter(t => t.valor > 0)
+                };
             }
+        } catch(e) {}
+        return { name: 'Deivid & Carol', receita: 10000, transactions: [] };
+    }
 
-            // Extrato
-            const list = document.getElementById('full-list');
-            list.innerHTML = state.transactions.length ? state.transactions.map((t, i) => `
-                <div class="glass p-5 rounded-[2rem] flex justify-between items-center">
-                    <div class="flex gap-4 items-center">
-                        <div class="size-10 bg-zinc-800 rounded-xl flex items-center justify-center text-zinc-500"><span class="material-symbols-rounded text-base">payments</span></div>
-                        <div><p class="text-sm font-bold">${t.cat}</p><p class="text-[9px] text-zinc-500 font-bold uppercase">${t.date}</p></div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <p class="text-sm font-bold text-rose-400">- R$ ${format(t.valor)}</p>
-                        <button onclick="deleteTx(${i})" class="text-zinc-700 active:text-rose-500"><span class="material-symbols-rounded">delete</span></button>
-                    </div>
-                </div>
-            `).join('') : '<p class="text-center py-20 text-zinc-700 text-xs font-bold uppercase">Nenhum gasto registrado</p>';
+    let currentInput = "0";
+    let currentCat = "Geral";
+
+    function sanitize(str) {
+        return String(str).replace(/[<>"'&]/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));
+    }
+
+    function init() {
+        const now = new Date();
+        document.getElementById('current-month').textContent =
+            now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+               .replace(/^\w/, c => c.toUpperCase());
+        document.getElementById('input-receita').value = state.receita;
+        document.getElementById('input-name').value = state.name;
+        render();
+    }
+
+    function navigate(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            b.classList.remove('active-nav');
+            b.classList.add('text-zinc-600');
+            b.classList.remove('text-primary-teal');
+            b.removeAttribute('aria-current');
+        });
+        const activeBtn = Array.from(document.querySelectorAll('.nav-btn'))
+            .find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(id));
+        if (activeBtn) {
+            activeBtn.classList.add('active-nav', 'text-primary-teal');
+            activeBtn.classList.remove('text-zinc-600');
+            activeBtn.setAttribute('aria-current', 'page');
         }
 
-        function renderStats() {
-            const cats = ['Igreja', 'Malu', 'Timão', 'Aleatório', 'Geral'];
-            const container = document.getElementById('stats-chart');
-            const totalGeral = state.transactions.reduce((a,b) => a+b.valor, 0) || 1;
+        const isHome = id === 'screen-home';
+        const subHeader = document.getElementById('sub-header');
+        subHeader.classList.toggle('hidden', isHome);
+        subHeader.classList.toggle('flex', !isHome);
 
-            container.innerHTML = cats.map(c => {
-                const totalCat = state.transactions.filter(t => t.cat === c).reduce((a,b) => a+b.valor, 0);
-                const p = Math.round((totalCat / totalGeral) * 100);
-                return `
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-xs"><span class="font-bold">${c}</span><span class="text-zinc-500">R$ ${format(totalCat)} (${p}%)</span></div>
-                        <div class="h-3 w-full bg-zinc-900 rounded-full overflow-hidden"><div class="h-full bg-primary-teal" style="width: ${p}%"></div></div>
-                    </div>
-                `;
-            }).join('');
+        if (id === 'screen-stats') renderStats();
+        if (id === 'screen-list') renderList();
+        renderDashboard();
+    }
+
+    function render() {
+        renderDashboard();
+    }
+
+    function renderDashboard() {
+        const total = state.transactions.reduce((a, b) => a + b.valor, 0);
+        const saldo = state.receita - total;
+        const perc = state.receita > 0 ? Math.min(100, Math.round((total / state.receita) * 100)) : 0;
+
+        document.getElementById('dash-saldo').textContent = format(saldo);
+        document.getElementById('dash-gastos').textContent = format(total);
+        document.getElementById('dash-receita').textContent = format(state.receita);
+        document.getElementById('user-name').textContent = state.name;
+
+        const bar = document.getElementById('dash-bar');
+        bar.className = 'h-full bar-fill ' + (perc > 80 ? 'bg-rose-400' : perc > 60 ? 'bg-amber-400' : 'bg-primary-teal');
+        bar.style.width = perc + '%';
+        document.getElementById('dash-bar-wrap').setAttribute('aria-valuenow', perc);
+
+        const ai = document.getElementById('ai-insight');
+        const extras = state.transactions.filter(t => t.cat === 'Aleatório').reduce((a,b) => a+b.valor, 0);
+        if (total === 0) {
+            ai.textContent = 'Nenhum gasto registrado ainda. Comece adicionando uma despesa!';
+        } else if (extras > state.receita * 0.15) {
+            ai.textContent = `Os gastos em "Extras" (R$ ${format(extras)}) estão acima de 15% da renda. Reduzindo um pouco aqui, sobra mais para a Malu!`;
+        } else if (total > state.receita * 0.8) {
+            ai.textContent = 'O orçamento está quase no limite (80%). Recomendo evitar compras não essenciais por agora.';
+        } else if (perc < 30) {
+            ai.textContent = 'Excelente gestão! Vocês ainda têm bastante saldo. Que tal separar uma parte para uma reserva de emergência?';
+        } else {
+            ai.textContent = `Vocês usaram ${perc}% do orçamento. Malu e Timão estão garantidos e há saldo positivo para o mês.`;
         }
 
-        function pressKey(k) {
-            if(k === 'del') currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : "0";
-            else if(currentInput === "0") currentInput = k;
+        const recent = state.transactions.slice(0, 3);
+        const recentEl = document.getElementById('dash-recent');
+        recentEl.innerHTML = '';
+        if (recent.length > 0) {
+            const frag = document.createDocumentFragment();
+            recent.forEach(t => {
+                const item = buildTransactionItem(t, null);
+                item.classList.add('opacity-70');
+                frag.appendChild(item);
+            });
+            recentEl.appendChild(frag);
+        }
+    }
+
+    function renderList() {
+        const list = document.getElementById('full-list');
+        const empty = document.getElementById('list-empty');
+        list.innerHTML = '';
+        if (state.transactions.length === 0) {
+            empty.classList.remove('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+        const frag = document.createDocumentFragment();
+        state.transactions.forEach((t, i) => frag.appendChild(buildTransactionItem(t, i)));
+        list.appendChild(frag);
+    }
+
+    function buildTransactionItem(t, index) {
+        const wrap = document.createElement('div');
+        wrap.className = 'glass p-5 rounded-[2rem] flex justify-between items-center';
+
+        const left = document.createElement('div');
+        left.className = 'flex gap-4 items-center';
+
+        const icon = document.createElement('div');
+        icon.className = 'size-10 bg-zinc-800 rounded-xl flex items-center justify-center text-zinc-500';
+        icon.innerHTML = '<span class="material-symbols-rounded text-base" aria-hidden="true">payments</span>';
+
+        const info = document.createElement('div');
+        const catEl = document.createElement('p');
+        catEl.className = 'text-sm font-bold';
+        catEl.textContent = t.cat;
+        const dateEl = document.createElement('p');
+        dateEl.className = 'text-[9px] text-zinc-500 font-bold uppercase';
+        dateEl.textContent = t.date;
+        info.appendChild(catEl);
+        info.appendChild(dateEl);
+        left.appendChild(icon);
+        left.appendChild(info);
+
+        const right = document.createElement('div');
+        right.className = 'flex items-center gap-4';
+
+        const val = document.createElement('p');
+        val.className = 'text-sm font-bold text-rose-400';
+        val.textContent = '- R$ ' + format(t.valor);
+        right.appendChild(val);
+
+        if (index !== null) {
+            const del = document.createElement('button');
+            del.className = 'text-zinc-700 delete-btn';
+            del.setAttribute('aria-label', `Excluir gasto de R$ ${format(t.valor)} em ${t.cat}`);
+            del.innerHTML = '<span class="material-symbols-rounded" aria-hidden="true">delete</span>';
+            del.addEventListener('click', () => deleteTx(index));
+            right.appendChild(del);
+        }
+
+        wrap.appendChild(left);
+        wrap.appendChild(right);
+        return wrap;
+    }
+
+    function renderStats() {
+        const cats = ['Igreja', 'Malu', 'Timão', 'Aleatório', 'Geral'];
+        const container = document.getElementById('stats-chart');
+        const statsEmpty = document.getElementById('stats-empty');
+        const totalGeral = state.transactions.reduce((a,b) => a + b.valor, 0);
+
+        if (totalGeral === 0) {
+            container.classList.add('hidden');
+            statsEmpty.classList.remove('hidden');
+            return;
+        }
+        container.classList.remove('hidden');
+        statsEmpty.classList.add('hidden');
+        container.innerHTML = '';
+
+        cats.forEach(c => {
+            const totalCat = state.transactions.filter(t => t.cat === c).reduce((a,b) => a+b.valor, 0);
+            if (totalCat === 0) return;
+            const p = Math.round((totalCat / totalGeral) * 100);
+
+            const wrap = document.createElement('div');
+            wrap.className = 'space-y-3';
+
+            const row = document.createElement('div');
+            row.className = 'flex justify-between text-xs';
+            const label = document.createElement('span');
+            label.className = 'font-bold';
+            label.textContent = c;
+            const info = document.createElement('span');
+            info.className = 'text-zinc-500';
+            info.textContent = `R$ ${format(totalCat)} (${p}%)`;
+            row.appendChild(label);
+            row.appendChild(info);
+
+            const track = document.createElement('div');
+            track.className = 'h-3 w-full bg-zinc-900 rounded-full overflow-hidden';
+            track.setAttribute('role', 'progressbar');
+            track.setAttribute('aria-label', `${c}: ${p}%`);
+            track.setAttribute('aria-valuenow', p);
+            track.setAttribute('aria-valuemin', 0);
+            track.setAttribute('aria-valuemax', 100);
+
+            const fill = document.createElement('div');
+            fill.className = 'h-full bg-primary-teal bar-fill';
+            fill.style.width = '0%';
+            requestAnimationFrame(() => { fill.style.width = p + '%'; });
+
+            track.appendChild(fill);
+            wrap.appendChild(row);
+            wrap.appendChild(track);
+            container.appendChild(wrap);
+        });
+    }
+
+    function pressKey(k) {
+        if (k === 'del') {
+            currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : "0";
+        } else {
+            if (currentInput.length >= 9) return;
+            if (currentInput === "0" && k !== "00") currentInput = k;
+            else if (currentInput === "0" && k === "00") currentInput = "0";
             else currentInput += k;
-            document.getElementById('display-value').innerText = (parseFloat(currentInput)/100).toLocaleString('pt-BR', {minimumFractionDigits:2});
         }
+        updateDisplay();
+        hideSheetError();
+    }
 
-        function openAddGasto(cat) {
-            currentCat = cat;
-            document.getElementById('sheet-title').innerText = "Novo Gasto: " + cat;
-            document.getElementById('add-sheet').classList.remove('sheet-hidden');
-            document.getElementById('add-sheet-overlay').classList.remove('hidden');
-            currentInput = "0";
-            document.getElementById('display-value').innerText = "0,00";
+    function updateDisplay() {
+        document.getElementById('display-value').textContent =
+            (parseFloat(currentInput) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    }
+
+    function openAddGasto(cat) {
+        currentCat = cat;
+        document.getElementById('sheet-title').textContent = 'Novo Gasto: ' + cat;
+        document.getElementById('add-sheet').classList.remove('sheet-hidden');
+        document.getElementById('add-sheet-overlay').classList.remove('hidden');
+        currentInput = "0";
+        updateDisplay();
+        hideSheetError();
+    }
+
+    function closeAddGasto() {
+        document.getElementById('add-sheet').classList.add('sheet-hidden');
+        document.getElementById('add-sheet-overlay').classList.add('hidden');
+    }
+
+    function showSheetError() {
+        const err = document.getElementById('sheet-error');
+        const display = document.querySelector('#add-sheet .text-6xl');
+        err.classList.remove('hidden');
+        display.classList.add('shake');
+        display.addEventListener('animationend', () => display.classList.remove('shake'), { once: true });
+    }
+
+    function hideSheetError() {
+        document.getElementById('sheet-error').classList.add('hidden');
+    }
+
+    function confirmGasto() {
+        const v = parseFloat(currentInput) / 100;
+        if (v <= 0) {
+            showSheetError();
+            return;
         }
+        state.transactions.unshift({
+            cat: currentCat,
+            valor: v,
+            date: new Date().toLocaleDateString('pt-BR')
+        });
+        save();
+        closeAddGasto();
+        showToast(`R$ ${format(v)} registrado em ${currentCat}!`, 'success');
+        navigate('screen-home');
+    }
 
-        function closeAddGasto() {
-            document.getElementById('add-sheet').classList.add('sheet-hidden');
-            document.getElementById('add-sheet-overlay').classList.add('hidden');
-        }
-
-        function confirmGasto() {
-            const v = parseFloat(currentInput)/100;
-            if(v <= 0) return;
-            state.transactions.unshift({ cat: currentCat, valor: v, date: new Date().toLocaleDateString('pt-BR') });
+    function deleteTx(i) {
+        if (confirm('Excluir este gasto?')) {
+            state.transactions.splice(i, 1);
             save();
-            closeAddGasto();
-            navigate('screen-home');
+            renderList();
+            renderDashboard();
+            showToast('Gasto removido.');
         }
+    }
 
-        function deleteTx(i) {
-            if(confirm("Excluir este gasto?")) { state.transactions.splice(i, 1); save(); }
+    function updateIncome() {
+        const raw = parseFloat(document.getElementById('input-receita').value);
+        const errEl = document.getElementById('receita-error');
+        if (isNaN(raw) || raw <= 0) {
+            errEl.classList.remove('hidden');
+            document.getElementById('input-receita').value = state.receita;
+            return;
         }
+        errEl.classList.add('hidden');
+        state.receita = raw;
+        save();
+        showToast('Renda atualizada!', 'success');
+    }
 
-        function updateIncome() { state.receita = parseFloat(document.getElementById('input-receita').value); save(); }
-        function updateProfileName() { state.name = document.getElementById('input-name').value; save(); }
-        function save() { localStorage.setItem('familia_db_final', JSON.stringify(state)); render(); }
-        function resetData() { if(confirm("Apagar tudo?")) { state.transactions = []; save(); } }
-        function format(v) { return v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+    function updateProfileName() {
+        const val = document.getElementById('input-name').value.trim();
+        if (!val) return;
+        state.name = val;
+        save();
+        showToast('Nome atualizado!', 'success');
+    }
 
-        init();
-    </script>
+    function save() {
+        localStorage.setItem('familia_db_v2', JSON.stringify(state));
+        renderDashboard();
+    }
+
+    function resetData() {
+        if (confirm('Apagar todos os gastos? Esta ação não pode ser desfeita.')) {
+            state.transactions = [];
+            save();
+            renderList();
+            renderStats();
+            showToast('Dados resetados.');
+        }
+    }
+
+    function format(v) {
+        return (v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    let toastTimer;
+    function showToast(msg, type = '') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'show' + (type ? ' ' + type : '');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { t.className = ''; }, 2800);
+    }
+
+    document.addEventListener('keydown', e => {
+        const sheet = document.getElementById('add-sheet');
+        if (sheet.classList.contains('sheet-hidden')) return;
+        if (e.key >= '0' && e.key <= '9') pressKey(e.key);
+        else if (e.key === 'Backspace') pressKey('del');
+        else if (e.key === 'Enter') confirmGasto();
+        else if (e.key === 'Escape') closeAddGasto();
+    });
+
+    init();
+</script>
 </body>
 </html>
